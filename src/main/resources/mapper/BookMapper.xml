@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuc.zbd1913041440_exp_6.mapper.zbdBookMapper">
+
+    <resultMap id="bookResultMap" type="com.nuc.zbd1913041440_exp_6.entity.zbdBook">
+        <id column="id" property="zbdBookId" jdbcType="INTEGER"/>
+        <result column="book_name" property="zbdBookName" jdbcType="VARCHAR"/>
+        <result column="book_price" property="zbdBookPrice" jdbcType="INTEGER"/>
+        <result column="book_coverpath" property="zbdBookCoverPath" jdbcType="VARCHAR"/>
+        <result column="book_typeid" property="zbdBookTypeId" jdbcType="INTEGER"/>
+        <association column="type" property="zbdType" javaType="com.nuc.zbd1913041440_exp_6.entity.zbdType">
+            <id column="id" property="zbdid" jdbcType="INTEGER"/>
+            <result column="type" property="zbdtype" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="typeResultMap" type="com.nuc.zbd1913041440_exp_6.entity.zbdType">
+        <id column="id" property="zbdid" jdbcType="INTEGER"/>
+        <result column="type" property="zbdtype" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <update id="setBook" parameterType="com.nuc.zbd1913041440_exp_6.entity.zbdBook">
+        update book set book_name = #{zbdBookName}, book_price=#{zbdBookPrice}, book_coverpath=#{zbdBookCoverPath},book_typeid=#{zbdBookTypeId} where id=#{zbdBookId}
+    </update>
+
+    <update id="setType" parameterType="com.nuc.zbd1913041440_exp_6.entity.zbdType">
+        update book_type set type = #{zbdtype} where id = #{zbdid}
+    </update>
+
+
+    <select id="findAllBooks" resultMap="bookResultMap">
+        SELECT book.id ,book.book_name,book.book_price,book_type.type,book.book_coverpath FROM book,book_type WHERE book.book_typeid = book_type.id
+    </select>
+
+
+    <select id="findBooks" resultMap="bookResultMap" parameterType="string">
+        select book.id,book.book_name,book.book_price,book_type.type,book.book_coverpath
+        from book left join book_type on book.book_typeid = book_type.id
+        where book.book_name like concat(concat('%',#{zbdBookName}),'%')
+           or book_type.type like concat(concat('%',#{zbdtype}),'%')
+    </select>
+
+    <select id="findBookTypeById" resultType="java.lang.String">
+        select type from book_type where id=#{zbdBookTypeId}
+    </select>
+
+    <select id="findBookType" resultMap="typeResultMap">
+        select * from book_type
+    </select>
+
+    <select id="findType" resultMap="typeResultMap">
+        select * from book_type where type like concat(concat('%',#{zbdtype},'%'))
+    </select>
+
+    <insert id="addBook" parameterType="com.nuc.zbd1913041440_exp_6.entity.zbdBook">
+        insert into book(id,book_name,book_price,book_coverpath,book_typeid) values (#{zbdBookId},#{zbdBookName},#{zbdBookPrice},#{zbdBookCoverPath},#{zbdBookTypeId})
+    </insert>
+
+    <insert id="addType" parameterType="com.nuc.zbd1913041440_exp_6.entity.zbdType">
+        insert into book_type(id,type) values (#{zbdid},#{zbdtype})
+    </insert>
+
+    <delete id="delBook" parameterType="integer">
+        delete from book where id=#{zbdBookId}
+    </delete>
+
+    <delete id="delBookType" parameterType="integer">
+        delete from book_type where id=#{zbdid}
+    </delete>
+</mapper>

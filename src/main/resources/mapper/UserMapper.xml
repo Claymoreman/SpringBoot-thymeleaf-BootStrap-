@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nuc.zbd1913041440_exp_6.mapper.zbdUserMapper">
+    <resultMap id="userResultMap" type="com.nuc.zbd1913041440_exp_6.entity.zbdUser">
+        <id column="id" property="zbdid" javaType="INTEGER"/>
+        <result column="user_name" property="zbduserName" jdbcType="VARCHAR"/>
+        <result column="password" property="zbdpassword" jdbcType="VARCHAR"/>
+        <result column="status" property="zbdstatus" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="login" resultMap="userResultMap">
+        select * from users where user_name = #{userName} and password = #{password}
+    </select>
+
+    <select id="findAllUsers" resultMap="userResultMap">
+        select * from users
+    </select>
+
+    <select id="findUser" resultMap="userResultMap">
+        select * from users where user_name like concat(concat('%',#{userName},'%'))
+    </select>
+
+    <insert id="register" parameterType="com.nuc.zbd1913041440_exp_6.entity.zbdUser">
+        insert into users(user_name,password,status) values (#{userName},#{password},#{status})
+    </insert>
+
+    <insert id="addUser" parameterType="com.nuc.zbd1913041440_exp_6.entity.zbdUser">
+        insert into users(user_name,password,status) values (#{zbduserName},#{zbdpassword},#{zbdstatus})
+    </insert>
+
+    <delete id="delUser" parameterType="integer">
+        delete from users where id = #{zbdid}
+    </delete>
+
+    <update id="setUser" parameterType="com.nuc.zbd1913041440_exp_6.entity.zbdUser">
+        update users set user_name = #{zbduserName} , password = #{zbdpassword} , status = #{zbdstatus} where id = #{zbdid}
+    </update>
+</mapper>
